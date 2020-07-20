@@ -2,20 +2,37 @@ package mapreduce;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.io.DoubleWritable;
+import org.apache.hadoop.io.NullWritable;
 
 import java.io.IOException;
 
 /**
  * @author zihan
  */
-public class EMailReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+public class EMailReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
+    private MultipleOutputs<NullWritable, Text> mos= null;
     @Override
-    protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-        int totalNum = 0;
-        for (IntWritable ignored : values) {
-            totalNum++;
+    public void setup(Context context) throws IOException, InterruptedException{
+        mos = new MultipleOutputs(context);
+    }
+    @Override
+    protected void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
+        String word = key.toString().split("#")[0];
+        String filename = key.toString().split("#")[1];
+        for(DoubleWritable tf:values)
+        {
+            Text temp = new Text(word+"\t"+tf.toString());
+            mos.write(NullWritable.get(),temp,filename+"tf");
         }
-        context.write(key, new IntWritable(totalNum));
+    }
+    public void cleanup(Context context)
+            throws IOException, InterruptedException {
+        if (mos != null) {
+            mos.close();
+            mos = null;
+        }
     }
 }

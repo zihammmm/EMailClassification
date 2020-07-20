@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.mortbay.util.IO;
 
 /**
  * 分词器
@@ -36,6 +37,7 @@ public class TextTokenizer {
     public List<String> tokenize(String fileName) {
         File file = new File(fileName);
         List<String> list = new LinkedList<>();
+
         try(Reader reader = new FileReader(file)) {
             TokenStream ts = analyzer.tokenStream("", reader);
             CharTermAttribute cta = ts.addAttribute(CharTermAttribute.class);
@@ -43,6 +45,7 @@ public class TextTokenizer {
             while (ts.incrementToken()) {
                 list.add(cta.toString());
             }
+            ts.close();
         }catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "cannot read this file:" + fileName);
         }
