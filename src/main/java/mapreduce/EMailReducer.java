@@ -28,8 +28,7 @@ public class EMailReducer extends Reducer<Text, DoubleWritable, Text, DoubleWrit
             mos.write(NullWritable.get(),temp,filename+"tf");
         }
     }
-    public void cleanup(Context context)
-            throws IOException, InterruptedException {
+    public void cleanup(Context context) throws IOException, InterruptedException {
         if (mos != null) {
             mos.close();
             mos = null;
