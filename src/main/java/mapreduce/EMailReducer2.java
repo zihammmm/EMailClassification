@@ -13,6 +13,7 @@ public class EMailReducer2 extends Reducer<Text, DoubleWritable, Text, DoubleWri
     private int filenum = 0;
     public void setup(Context context)throws IOException, InterruptedException{
         filenum = Integer.parseInt(context.getProfileParams());
+        System.err.println(filenum);
     }
     @Override
     protected void reduce(Text key, Iterable<DoubleWritable> values, Context context)throws IOException, InterruptedException{
