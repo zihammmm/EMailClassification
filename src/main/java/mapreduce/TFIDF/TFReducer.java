@@ -1,4 +1,4 @@
-package mapreduce;
+package mapreduce.TFIDF;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * @author zihan
  */
-public class EMailReducer extends Reducer<Text, DoubleWritable, NullWritable, Text> {
+public class TFReducer extends Reducer<Text, DoubleWritable, NullWritable, Text> {
     private MultipleOutputs<NullWritable, Text> mos= null;
     @Override
     public void setup(Context context) throws IOException, InterruptedException{

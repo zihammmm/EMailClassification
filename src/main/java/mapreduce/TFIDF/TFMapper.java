@@ -1,4 +1,4 @@
-package mapreduce;
+package mapreduce.TFIDF;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -10,7 +10,7 @@ import preprocess.TextTokenizer;
 import java.io.IOException;
 import java.util.List;
 
-public class EMailMapper extends Mapper<Object, Text, Text, DoubleWritable> {
+public class TFMapper extends Mapper<Object, Text, Text, DoubleWritable> {
     private Text word = new Text();
     private DoubleWritable count = new DoubleWritable(1);
 

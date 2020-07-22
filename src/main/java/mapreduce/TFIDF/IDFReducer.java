@@ -1,4 +1,4 @@
-package mapreduce;
+package mapreduce.TFIDF;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -9,7 +9,7 @@ import org.apache.hadoop.io.NullWritable;
 
 import java.io.IOException;
 
-public class EMailReducer2 extends Reducer<Text, DoubleWritable, Text, DoubleWritable>{
+public class IDFReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable>{
     private int filenum = 0;
     public void setup(Context context)throws IOException, InterruptedException{
         filenum = Integer.parseInt(context.getProfileParams());

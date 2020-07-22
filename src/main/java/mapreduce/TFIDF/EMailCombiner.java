@@ -1,6 +1,5 @@
-package mapreduce;
+package mapreduce.TFIDF;
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -13,13 +12,10 @@ public class EMailCombiner extends Reducer<Text, DoubleWritable, Text, DoubleWri
 
     @Override
     protected void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException{
-        if(key.toString().split("#")[0].equals("!"))
-        {
+        if(key.toString().split("#")[0].equals("!")) {
             for(DoubleWritable num:values)
                 wordnum = num.get() + wordnum;
-        }
-        else
-        {
+        } else {
             int temp = 0;
             for(DoubleWritable num:values)
                 temp += num.get();

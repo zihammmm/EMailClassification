@@ -1,23 +1,17 @@
-package mapreduce;
+package mapreduce.TFIDF;
 
-import javafx.scene.shape.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
-import org.apache.hadoop.io.DoubleWritable;
-import preprocess.TextTokenizer;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EMailMapper3 extends Mapper<Object, Text, Text, Text>{
+public class TFIDFMapper extends Mapper<Object, Text, Text, Text>{
     List<String> wordList = new ArrayList<String>();
     List<Double> idfList = new ArrayList<Double>();
     public void setup(Context context) throws IOException, InterruptedException{
