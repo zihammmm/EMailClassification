@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * @author zihan
  */
-public class EMailReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
+public class EMailReducer extends Reducer<Text, DoubleWritable, NullWritable, Text> {
     private MultipleOutputs<NullWritable, Text> mos= null;
     @Override
     public void setup(Context context) throws IOException, InterruptedException{
@@ -25,7 +25,7 @@ public class EMailReducer extends Reducer<Text, DoubleWritable, Text, DoubleWrit
         for(DoubleWritable tf:values)
         {
             Text temp = new Text(word+"\t"+tf.toString());
-            mos.write(NullWritable.get(),temp,filename+"tf");
+            mos.write(NullWritable.get(),temp,context.getProfileParams()+"#"+filename);
         }
     }
     public void cleanup(Context context) throws IOException, InterruptedException {

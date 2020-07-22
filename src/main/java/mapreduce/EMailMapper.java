@@ -20,6 +20,7 @@ public class EMailMapper extends Mapper<Object, Text, Text, DoubleWritable> {
         String fileName = fileSplit.getPath().toString();
         fileName = fileName.substring(5);
         List<String> list = TextTokenizer.getInstance().tokenize(fileName);
+        fileName = fileSplit.getPath().getName();
         word.set("!#"+fileName);
         context.write(word,new DoubleWritable(list.size()));
         for (String string : list) {
