@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 class TextTokenizerTest {
-    private final static String TEST_FLIE_NAME = "src/main/resources/1234";
+    private final static String TEST_FLIE_NAME = "i jio josdf jnsaf jjgoa 4213 fsao laodf";
 
     @Test
     void tokenize() {
