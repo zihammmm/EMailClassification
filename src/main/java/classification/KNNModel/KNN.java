@@ -18,8 +18,7 @@ public class KNN {
     /**
      * 用于保存训练集数据
      */
-    private static HashMap<FileBean, TreeMap<String, Double>> train = new HashMap<>();
-    private ArrayList<FileBean> result = new ArrayList<>();
+    private static HashMap<FileBean, HashMap<String, Double>> train = new HashMap<>();
     private static final double MIN_DIFF = 10E-5;
 
     /**
@@ -78,7 +77,7 @@ public class KNN {
                     String name = keyValue[0].split("\\.")[0];
 
                     FileBean fileBean = new FileBean(name.split("#")[0], name.split("#")[1]);
-                    TreeMap<String, Double> singleFileTFIDF = new TreeMap<>();
+                    HashMap<String, Double> singleFileTFIDF = new HashMap<>();
                     for (int i = 1; i < keyValue.length; i++) {
                         String[] unit = keyValue[i].split(":");
                         singleFileTFIDF.put(unit[0], Double.parseDouble(unit[1]));
@@ -97,14 +96,12 @@ public class KNN {
                 String[] unit = keyValue[i].split(":");
                 tfidf.put(unit[0], Double.parseDouble(unit[1]));
             }
-            Set<Map.Entry<FileBean, TreeMap<String, Double>>> trainSet = train.entrySet();
 
             //存储在一个优先级队列中
             Queue<FileBean> topK = new PriorityQueue<>(comparator);
-            for (Map.Entry<FileBean, TreeMap<String, Double>> me : trainSet) {
-                double retTFIDF = DistanceUtils.cosineDistance(me.getValue(), tfidf);
-                me.getKey().setDistance(retTFIDF);
-                topK.add(me.getKey());
+            for (FileBean word : train.keySet()) {
+                word.setDistance(DistanceUtils.cosineDistance(train.get(word), tfidf));
+                topK.add(word);
             }
 
             TreeMap<String, Integer> vote = new TreeMap<>();
@@ -120,13 +117,12 @@ public class KNN {
                 }
             }
 
-            Set<Map.Entry<String, Integer>> selectBest = vote.entrySet();
             int maxNum = -1;
             String targetClassName = null;
-            for (Map.Entry<String, Integer> me : selectBest) {
-                if (maxNum < me.getValue()) {
-                    maxNum = me.getValue();
-                    targetClassName = me.getKey();
+            for (String className : vote.keySet()) {
+                if (maxNum < vote.get(className)) {
+                    maxNum = vote.get(className);
+                    targetClassName = className;
                 }
             }
             //输出类名

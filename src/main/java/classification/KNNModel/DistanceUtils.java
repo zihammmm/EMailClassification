@@ -16,18 +16,16 @@ public class DistanceUtils {
      */
     public static double cosineDistance(Map<String, Double> train, Map<String, Double> test) {
         double vec = 0, testAbs = 0, trainAbs = 0;
-        Set<Map.Entry<String, Double>> testSet = test.entrySet();
-        for (Map.Entry<String, Double> me : testSet) {
-            if (train.containsKey(me.getKey())) {
-                vec += me.getValue() * train.get(me.getKey());
+        for (String key : test.keySet()) {
+            if (train.containsKey(key)) {
+                vec += test.get(key) * train.get(key);
             }
-            testAbs += me.getValue() * me.getValue();
+            testAbs += test.get(key) * test.get(key);
         }
         testAbs = Math.sqrt(testAbs);
 
-        Set<Map.Entry<String, Double>> trainSet = train.entrySet();
-        for (Map.Entry<String, Double> me : trainSet) {
-            trainAbs += me.getValue() * me.getValue();
+        for (String key : train.keySet()) {
+            trainAbs += train.get(key) * train.get(key);
         }
         trainAbs = Math.sqrt(trainAbs);
 
