@@ -1,4 +1,4 @@
-package mapreduce.TFIDF;
+package TFIDF;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;

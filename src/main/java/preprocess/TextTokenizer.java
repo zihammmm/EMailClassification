@@ -47,7 +47,24 @@ public class TextTokenizer {
             }
             ts.close();
         }catch (IOException e) {
+            e.printStackTrace();
             Logger.getAnonymousLogger().log(Level.SEVERE, "cannot read this file:" + fileName);
+        }
+        return list;
+    }
+
+    public List<String> tokenizeOneLine(String line) {
+        TokenStream ts = analyzer.tokenStream("", line);
+        CharTermAttribute cta = ts.addAttribute(CharTermAttribute.class);
+        List<String> list = new LinkedList<>();
+        try {
+            ts.reset();
+            while (ts.incrementToken()) {
+                list.add(cta.toString());
+            }
+            ts.close();
+        }catch (IOException e) {
+            e.printStackTrace();
         }
         return list;
     }

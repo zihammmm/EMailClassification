@@ -1,4 +1,4 @@
-package classification;
+package classification.KNNModel;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -137,7 +137,6 @@ public class KNN {
             double diff = o1.getDistance() - o2.getDistance();
             return Double.compare(MIN_DIFF, Math.abs(diff));
         };
-
 
 
     }

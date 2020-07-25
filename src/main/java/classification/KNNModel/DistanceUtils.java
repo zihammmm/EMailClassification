@@ -1,4 +1,4 @@
-package classification;
+package classification.KNNModel;
 
 import java.util.Iterator;
 import java.util.Map;

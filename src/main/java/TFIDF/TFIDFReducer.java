@@ -1,15 +1,11 @@
-package mapreduce.TFIDF;
+package TFIDF;
 
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.NullWritable;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TFIDFReducer extends Reducer<Text, Text, NullWritable, Text>{
     private MultipleOutputs<NullWritable, Text> mos = null;
