@@ -1,5 +1,6 @@
 package classification.KNNModel;
 
+import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
@@ -7,6 +8,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 
 /**
@@ -16,7 +18,7 @@ public class KNN {
     /**
      * 用于保存训练集数据
      */
-    private static TreeMap<FileBean, TreeMap<String, Double>> train = new TreeMap<>();
+    private static HashMap<FileBean, TreeMap<String, Double>> train = new HashMap<>();
     private ArrayList<FileBean> result = new ArrayList<>();
     private static final double MIN_DIFF = 10E-5;
 
@@ -63,12 +65,15 @@ public class KNN {
          */
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
-            FileSplit fileSplit = (FileSplit) context.getInputSplit();
-            String fileName = fileSplit.getPath().getName();
+            String idffilefolder = context.getProfileParams();
+            FileSystem temp = FileSystem.get(URI.create(idffilefolder), context.getConfiguration());
+            FileStatus[] res = temp.listStatus(new Path(idffilefolder));
+            Path[] paths = FileUtil.stat2Paths(res);
 
-            try(BufferedReader in = new BufferedReader(new FileReader(fileName))) {
-                String msg;
-                while ((msg = in.readLine()) != null) {
+            for (Path p : paths) {
+                FSDataInputStream inStream = FileSystem.get(context.getConfiguration()).open(p);
+                while (inStream.available() > 0) {
+                    String msg = inStream.readLine();
                     String[] keyValue = msg.split("\\s+");
                     String name = keyValue[0].split("\\.")[0];
 
@@ -80,8 +85,6 @@ public class KNN {
                     }
                     train.put(fileBean, singleFileTFIDF);
                 }
-            }catch (IOException e) {
-                e.printStackTrace();
             }
         }
 
