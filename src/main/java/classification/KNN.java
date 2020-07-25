@@ -15,6 +15,9 @@ import java.util.TreeMap;
 
 
 public class KNN {
+    private static TreeMap<FileBean, TreeMap<String, Double>> train = new TreeMap<>();
+    private ArrayList<FileBean> result = new ArrayList<>();
+
     static class FileBean {
         String className;
         String fileName;
@@ -31,8 +34,7 @@ public class KNN {
 
     public static class KNNMapper extends Mapper<Object, Text, Text, Text> {
         private static final int K_NEIGHBOR = 10;
-        private TreeMap<FileBean, TreeMap<String, Double>> train = new TreeMap<>();
-        private TreeMap<FileBean, TreeMap<String, Double>> test = new TreeMap<>();
+
         /**
          *
          * @param context
@@ -41,36 +43,42 @@ public class KNN {
          */
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
-            URI[] cacheFiles = context.getCacheFiles();
-            FileSystem fs = FileSystem.get(context.getConfiguration());
-            Path trainPath = new Path(cacheFiles[0]);
-            FileStatus[] fileStatuses = fs.listStatus(trainPath);
-            Path[] fullVec = FileUtil.stat2Paths(fileStatuses);
-            for (Path p : fullVec) {
-                //TODO:
-                FileBean fileBean = new FileBean("className", "fileName");
-                TreeMap<String, Double> tfidf = new TreeMap<>();
-                try(BufferedReader in = new BufferedReader(new FileReader(p.toString()))) {
-                    String msg;
-                    while ((msg = in.readLine()) != null) {
-                        String[] attr = msg.split("#");
-                        tfidf.put(attr[0], Double.parseDouble(attr[1]));
+            FileSplit fileSplit = (FileSplit) context.getInputSplit();
+            String fileName = fileSplit.getPath().getName();
+
+
+            try(BufferedReader in = new BufferedReader(new FileReader(fileName))) {
+                String msg;
+                while ((msg = in.readLine()) != null) {
+                    String[] keyValue = msg.split("\\s+");
+                    String name = keyValue[0].split("\\.")[0];
+
+                    FileBean fileBean = new FileBean(name.split("#")[0], name.split("#")[1]);
+                    TreeMap<String, Double> singleFileTFIDF = new TreeMap<>();
+                    for (int i = 1; i < keyValue.length; i++) {
+                        String[] unit = keyValue[i].split(":");
+                        singleFileTFIDF.put(unit[0], Double.parseDouble(unit[1]));
                     }
-                }catch (IOException e) {
-                    e.printStackTrace();
+                    train.put(fileBean, singleFileTFIDF);
                 }
-                train.put(fileBean, tfidf);
+            }catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
         @Override
         protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            FileSplit fileSplit = (FileSplit) context.getInputSplit();
-            String fileName = fileSplit.getPath().getName();
-
-
+            String[] keyValue = value.toString().split("\\s+");
+            String fileName = keyValue[0].split("\\.")[0].split("#")[1];
+            TreeMap<String, Double> tfidf = new TreeMap<>();
+            for (int i = 1; i < keyValue.length; i++) {
+                String[] unit = keyValue[i].split(":");
+                tfidf.put(unit[0], Double.parseDouble(unit[1]));
+            }
 
         }
+
+
 
     }
 }
