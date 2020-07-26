@@ -94,6 +94,7 @@ public class KNN {
                         singleFileTFIDF.put(unit[0], Double.parseDouble(unit[1]));
                     }
                     fileBean.setTfidf(singleFileTFIDF);
+                    train.add(fileBean);
                 }
             }
         }
