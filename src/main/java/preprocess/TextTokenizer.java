@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.mortbay.util.IO;
 
 /**
  * 分词器

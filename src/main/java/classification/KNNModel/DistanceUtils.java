@@ -28,7 +28,9 @@ public class DistanceUtils {
             trainAbs += train.get(key) * train.get(key);
         }
         trainAbs = Math.sqrt(trainAbs);
-
+        if (testAbs == 0 || trainAbs == 0) {
+            return -1;
+        }
         return vec / (testAbs * trainAbs);
     }
 }

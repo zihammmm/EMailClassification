@@ -13,6 +13,15 @@ import java.io.IOException;
  * 预测
  */
 public class Prediction {
+    public Prediction() {
+        //统计文档总数
+
+        //计算先验概率
+
+        //计算单词总数
+
+        //
+    }
     /**
      *
      */
