@@ -84,14 +84,14 @@ public class KNN {
                 while (inStream.available() > 0) {
                     String msg = inStream.readLine();
                     String[] keyValue = msg.split("\\s+");
-                    String name = keyValue[0].split("\\.")[0];
+                    String name = new String(keyValue[0].split("\\.")[0]);
 
                     String[] classFileName = name.split("#");
-                    fileBean = new FileBean(classFileName[0], classFileName[1]);
+                    fileBean = new FileBean(new String(classFileName[0]), new String(classFileName[1]));
                     TreeMap<String, Double> singleFileTFIDF = new TreeMap<>();
                     for (int i = 1; i < keyValue.length; i++) {
                         String[] unit = keyValue[i].split(":");
-                        singleFileTFIDF.put(unit[0], Double.parseDouble(unit[1]));
+                        singleFileTFIDF.put(new String(unit[0]), Double.parseDouble(unit[1]));
                     }
                     fileBean.setTfidf(singleFileTFIDF);
                     train.add(fileBean);
@@ -102,11 +102,11 @@ public class KNN {
         @Override
         protected void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String[] keyValue = value.toString().split("\\s+");
-            String fileName = keyValue[0].split("\\.")[0].split("#")[1];
+            String fileName = new String(keyValue[0].split("\\.")[0].split("#")[1]);
             TreeMap<String, Double> tfidf = new TreeMap<>();
             for (int i = 1; i < keyValue.length; i++) {
                 String[] unit = keyValue[i].split(":");
-                tfidf.put(unit[0], Double.parseDouble(unit[1]));
+                tfidf.put(new String(unit[0]), Double.parseDouble(unit[1]));
             }
 
             //存储在一个优先级队列中,堆顶存放distance最大的元素
