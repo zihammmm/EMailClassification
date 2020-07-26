@@ -84,14 +84,14 @@ public class KNN {
                 while (inStream.available() > 0) {
                     String msg = inStream.readLine();
                     String[] keyValue = msg.split("\\s+");
-                    String name = new String(keyValue[0]);
+                    String name = keyValue[0];
 
                     String[] classFileName = name.split("#");
-                    fileBean = new FileBean(new String(classFileName[0]).intern(), new String(classFileName[1]).intern());
+                    fileBean = new FileBean(classFileName[0].intern(), classFileName[1].intern());
                     TreeMap<String, Double> singleFileTFIDF = new TreeMap<>();
                     for (int i = 1; i < keyValue.length; i++) {
                         String[] unit = keyValue[i].split(":");
-                        singleFileTFIDF.put(new String(unit[0]).intern(), Double.parseDouble(unit[1]));
+                        singleFileTFIDF.put(unit[0].intern(), Double.parseDouble(unit[1]));
                     }
                     fileBean.setTfidf(singleFileTFIDF);
                     train.add(fileBean);
@@ -106,7 +106,7 @@ public class KNN {
             TreeMap<String, Double> tfidf = new TreeMap<>();
             for (int i = 1; i < keyValue.length; i++) {
                 String[] unit = keyValue[i].split(":");
-                tfidf.put(new String(unit[0]).intern(), Double.parseDouble(unit[1]));
+                tfidf.put(unit[0].intern(), Double.parseDouble(unit[1]));
             }
 
             //存储在一个优先级队列中,堆顶存放distance最大的元素

@@ -17,3 +17,6 @@ https://blog.csdn.net/hao5335156/article/details/82716923
 https://www.cnblogs.com/kexinxin/p/10049910.html
 
 https://tengzi-will.github.io/2018/12/24/Hadoop-实现朴素贝叶斯-Naive-Bayes-文本分类/
+
++ 类c下的单词总数   -> 相加可以得到整个训练样本的单词总数
++ 类c下的单词， 出现次数  -> 将单词数相加可以得到|v|

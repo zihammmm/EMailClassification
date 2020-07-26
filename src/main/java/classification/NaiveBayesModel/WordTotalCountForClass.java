@@ -8,9 +8,11 @@ import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import preprocess.TextTokenizer;
 
 
 import java.io.IOException;
+import java.util.List;
 
 class WholeFileInputFormat extends FileInputFormat<NullWritable, BytesWritable> {
 
@@ -30,7 +32,7 @@ class WholeRecordReader extends RecordReader<NullWritable, BytesWritable> {
 
     @Override
     public void initialize(InputSplit inputSplit, TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
-        this.split = (FileSplit)split;
+        this.split = (FileSplit)inputSplit;
         configuration = taskAttemptContext.getConfiguration();
     }
 
@@ -78,13 +80,11 @@ class WholeRecordReader extends RecordReader<NullWritable, BytesWritable> {
 }
 
 /**
- * 计算先验概率
- * 统计文档总数
+ * 类名 单词总数
  */
-public class PriorProbability {
-    public static class PriorProbabilityMapper extends Mapper<NullWritable, BytesWritable, Text, IntWritable> {
+public class WordTotalCountForClass {
+    public static class WordTotalCountMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
         private Text text = new Text();
-        private IntWritable intWritable = new IntWritable(1);
 
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
@@ -95,8 +95,13 @@ public class PriorProbability {
         }
 
         @Override
-        protected void map(NullWritable key, BytesWritable value, Context context) throws IOException, InterruptedException {
-            context.write(text, intWritable);
+        protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+            List<String> values = TextTokenizer.getInstance().tokenize(value.toString());
+            int count = 0;
+            for (String word : values) {
+                count++;
+            }
+            context.write(text, new IntWritable(count));
         }
     }
 

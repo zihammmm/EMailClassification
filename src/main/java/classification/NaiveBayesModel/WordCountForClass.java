@@ -12,8 +12,11 @@ import preprocess.TextTokenizer;
 import java.io.IOException;
 import java.util.List;
 
-public class ConProbability {
-    public static class ConProbabilityMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+/**
+ * 类名 单词 出现次数
+ */
+public class WordCountForClass {
+    public static class WordCountForClassMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
         private IntWritable intWritable = new IntWritable(1);
 
         @Override
@@ -30,7 +33,7 @@ public class ConProbability {
         }
     }
 
-    public static class ConProbabilityReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+    public static class WordCountForClassReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
         @Override
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             int sum = 0;
