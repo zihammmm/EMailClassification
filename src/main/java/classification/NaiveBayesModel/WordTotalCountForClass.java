@@ -14,77 +14,17 @@ import preprocess.TextTokenizer;
 import java.io.IOException;
 import java.util.List;
 
-class WholeFileInputFormat extends FileInputFormat<NullWritable, BytesWritable> {
-
-    @Override
-    public RecordReader<NullWritable, BytesWritable> createRecordReader(InputSplit inputSplit, TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
-        WholeRecordReader recordReader = new WholeRecordReader();
-        recordReader.initialize(inputSplit, taskAttemptContext);
-        return recordReader;
-    }
-}
-
-class WholeRecordReader extends RecordReader<NullWritable, BytesWritable> {
-    BytesWritable value = new BytesWritable();
-    boolean isProcess = false;
-    FileSplit split;
-    Configuration configuration;
-
-    @Override
-    public void initialize(InputSplit inputSplit, TaskAttemptContext taskAttemptContext) throws IOException, InterruptedException {
-        this.split = (FileSplit)inputSplit;
-        configuration = taskAttemptContext.getConfiguration();
-    }
-
-    @Override
-    public boolean nextKeyValue() throws IOException, InterruptedException {
-        if (!isProcess) {
-            byte[] buf = new byte[(int) split.getLength()];
-
-            FileSystem fs = null;
-            FSDataInputStream fsDataInputStream = null;
-
-            Path path = split.getPath();
-            fs = path.getFileSystem(configuration);
-            fsDataInputStream = fs.open(path);
-            IOUtils.readFully(fsDataInputStream, buf, 0, buf.length);
-            value.set(buf, 0, buf.length);
-
-            fs.close();
-            fsDataInputStream.close();
-            isProcess = true;
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public NullWritable getCurrentKey() throws IOException, InterruptedException {
-        return NullWritable.get();
-    }
-
-    @Override
-    public BytesWritable getCurrentValue() throws IOException, InterruptedException {
-        return value;
-    }
-
-    @Override
-    public float getProgress() throws IOException, InterruptedException {
-        return isProcess?1:0;
-    }
-
-    @Override
-    public void close() throws IOException {
-
-    }
-}
-
 /**
  * 类名 单词总数
  */
 public class WordTotalCountForClass {
+    /**
+     * 输入训练集
+     * 输出：
+     * 类名   1
+     */
     public static class WordTotalCountMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
-        private Text text = new Text();
+        private final Text text = new Text();
 
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
@@ -106,8 +46,17 @@ public class WordTotalCountForClass {
     }
 
     public static class PriorProbabilityReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
-        private IntWritable intWritable = new IntWritable();
+        private final IntWritable intWritable = new IntWritable(1);
 
+        /**
+         * 输出：
+         * 类名   单词数
+         * @param key
+         * @param values
+         * @param context
+         * @throws IOException
+         * @throws InterruptedException
+         */
         @Override
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             int sum = 0;
@@ -115,6 +64,7 @@ public class WordTotalCountForClass {
                 sum += value.get();
             }
             intWritable.set(sum);
+            Prediction.wordTotalNumForClass.put(key.toString(), sum);
             context.write(key, intWritable);
         }
     }
